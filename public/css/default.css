@@ -1,4 +1,10 @@
-body{
+body {
+    background-image: url('../images/transparent.jpg');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+}
 
-    background-color: red;
+.mdl-textfield,
+.mdl-card{
+    width: 100%;
 }
