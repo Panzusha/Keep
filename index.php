@@ -47,12 +47,14 @@
                 <div class="mdl-grid">
                     <div class="mdl-cell mdl-cell--4-col"></div>
                     <div class="mdl-cell mdl-cell--4-col">
+                        <!-- lie le formulaire au fichier api.php -->
                         <form action="api.php?faire=ajout" method="POST">
                             <div class="mdl-card mdl-shadow--8dp">
                                 <div class="mdl-card__title">
                                     <h2 class="mdl-card__title-text">Créer une note</h2>
                                 </div>
-                                <?php
+                                <?php // propriétés utilisées dans le formulaire plus bas
+                                // ternaire : si rempli = valeur de l'url sinon vide
                                 $recuperationTitreNote = isset($_GET['monSuperTitre']) ? $_GET['monSuperTitre'] : '';
                                 $recuperationContenuNote = isset($_GET['contenuNote']) ? $_GET['contenuNote'] : '';
 
@@ -64,8 +66,9 @@
                                 ?>
                                 <div class="mdl-card__supporting-text">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                        <!-- for lié a id -->
+                                        <!-- pattern regex, name utilisé par api.php et ternaire ci dessus -->
                                         <input required class="mdl-textfield__input" pattern="[A-Za-z]*" name="monSuperTitre" type="text" id="identifiantTitreNote" value="<?= $recuperationTitreNote ?>">
+                                        <!-- for lié a l'id -->
                                         <label class="mdl-textfield__label" for="identifiantTitreNote">Titre</label>
                                         <span class="mdl-textfield__error">Ce champ est obligatoire</span>
                                     </div>
@@ -87,7 +90,7 @@
                 </div>
                 <hr />
                 <div class="mdl-grid notes_list">
-                    <?php
+                    <?php // création des cartes
                     for ($i = 0; $i < 36; $i++) {
                     ?>
                         <div class="mdl-cell mdl-cell--4-col">

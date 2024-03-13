@@ -1,5 +1,5 @@
 <?php
-
+// connection BDD
 function getPDO($dsn, $username, $mdp) {
 
     $pdo = new PDO($dsn, $username, $mdp);
