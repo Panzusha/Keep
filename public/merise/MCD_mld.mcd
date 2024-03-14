@@ -1,0 +1,8 @@
+%%mocodo
+:
+Catégories: num_cat, label, allow_Delete, created_at, updated_at
+:
+Pivot: #num_cat > Catégories > num_cat, _#num_note > Notes > num_note
+:
+Notes: num_note, title, description, created_at, updated_at
+:

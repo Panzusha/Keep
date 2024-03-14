@@ -1,10 +1,34 @@
 <?php
-// connection BDD
-function getPDO($dsn, $username, $mdp) {
+class Database{
 
-    $pdo = new PDO($dsn, $username, $mdp);
-    return $pdo;
+    // connection BDD
+    public function getPDO($dsn, $username, $mdp) {
+    
+        $pdo = new PDO($dsn, $username, $mdp);
+        return $pdo;
+    }
+
+    // ajout note dans BDD ( partie Create du CRUD)
+    public function ajoutNote(string $titre, string $note):bool {
+        $query = $this->getPDO()->prepare('INSERT INTO notes (title, content, createdAt ) VALUES (:titre, :note, :dateAjout)');
+    
+            return $query->execute([
+                'titre' => $titre,
+                'note' => $note,
+                'dateAjout' => date("Y-m-d H:i:s"),
+            ]);
+    }
+
+    // affichage notes ( partie Read du CRUD)
+    public function getNotes() {
+        $query = $this->getPDO()->query('SELECT * 
+        FROM notes n
+        ORDER BY n.id ASC
+    ');
+    $notes = $query->fetchAll(PDO::FETCH_ASSOC);
+    return $notes;
+    }
+
 }
 
-$pdo = getPDO('mysql:host=localhost;dbname=keep', 'root', '');
 ?>

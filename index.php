@@ -1,3 +1,13 @@
+<?php
+
+include "api/database.php";
+// Connection à la Base De Données
+$pdo = getPDO('mysql:host=localhost;dbname=keep_dev', 'root', '');
+// Appel de la fonction qui permettra de remplir les champs de films
+$notes = getNotes($pdo);
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -6,8 +16,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="public/libs/material-design-lite/material.min.css">
-    <link rel="stylesheet" href="public/css/default.css">
+    <link rel="stylesheet" href="public/css/default.css?x=<?= time()?>">
     <script defer src="public/libs/material-design-lite/material.min.js"></script>
+    <script defer src="public/js/keep.js?x=<?= time()?>"></script>
     <title>Keep</title>
 </head>
 
@@ -45,8 +56,7 @@
                 <h1 align="center">Keep</h1>
                 <hr />
                 <div class="mdl-grid">
-                    <div class="mdl-cell mdl-cell--4-col"></div>
-                    <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-cell--2-offset-tablet mdl-cell--4-offset-desktop">
                         <!-- lie le formulaire au fichier api.php -->
                         <form action="api.php?faire=ajout" method="POST">
                             <div class="mdl-card mdl-shadow--8dp">
@@ -55,8 +65,8 @@
                                 </div>
                                 <?php // propriétés utilisées dans le formulaire plus bas
                                 // ternaire : si rempli = valeur de l'url sinon vide
-                                $recuperationTitreNote = isset($_GET['monSuperTitre']) ? $_GET['monSuperTitre'] : '';
-                                $recuperationContenuNote = isset($_GET['contenuNote']) ? $_GET['contenuNote'] : '';
+                                $recuperationTitreNote = isset($_GET['monSuperTitre']) ? $_GET['monSuperTitre'] : 'Toto';
+                                $recuperationContenuNote = isset($_GET['contenuNote']) ? $_GET['contenuNote'] : 'Titi';
 
                                 if (isset($_GET['message'])) {
                                 ?>
@@ -82,27 +92,29 @@
                                         <i class="material-icons">save</i>
                                         Enregistrer
                                     </button>
+                                    <button type="reset" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                                        Reset
+                                    </button>
+                                    <button type="button" onclick="Keep.emptyFormAdd();" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                                        Effacer
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <div class="mdl-cell mdl-cell--4-col"></div>
                 </div>
                 <hr />
                 <div class="mdl-grid notes_list">
                     <?php // création des cartes
-                    for ($i = 0; $i < 36; $i++) {
+                    foreach ($notes as $note):
                     ?>
-                        <div class="mdl-cell mdl-cell--4-col">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet mdl-cell--12-col-phone mdl-cell--1-offset-tablet">
                             <div class="mdl-card">
                                 <div class="mdl-card__title">
-                                    Titre
+                                    <?=$notes['title']?>
                                 </div>
                                 <div class="mdl-card__supporting-text">
-                                    Sed (saepe enim redeo ad Scipionem, cuius omnis sermo erat de amicitia) querebatur, quod omnibus in rebus homines diligentiores essent; capras et oves quot quisque haberet, dicere posse, amicos quot haberet, non posse dicere et in illis quidem parandis adhibere curam, in amicis eligendis neglegentis esse nec habere quasi signa quaedam et notas, quibus eos qui ad amicitias essent idonei, iudicarent. Sunt igitur firmi et stabiles et constantes eligendi; cuius generis est magna penuria. Et iudicare difficile est sane nisi expertum; experiendum autem est in ipsa amicitia. Ita praecurrit amicitia iudicium tollitque experiendi potestatem.
-                                    <br />
-                                    <br />
-                                    Dum apud Persas, ut supra narravimus, perfidia regis motus agitat insperatos, et in eois tractibus bella rediviva consurgunt, anno sexto decimo et eo diutius post Nepotiani exitium, saeviens per urbem aeternam urebat cuncta Bellona, ex primordiis minimis ad clades excita luctuosas, quas obliterasset utinam iuge silentium! ne forte paria quandoque temptentur, plus exemplis generalibus nocitura quam delictis.
+                                <?=$notes['content']?>
                                 </div>
                                 <div class="mdl-card__actions">
                                     <i class="material-icons">settings</i>
@@ -110,14 +122,13 @@
                             </div>
                         </div>
                     <?php
-                    }
+                    endforeach;
                     ?>
                 </div>
             </div>
         </main>
     </div>
-    <script src="public/libs/material-design-lite/material.min.js"></script>
-    <script src="public/js/keep.js"></script>
+    
 
 </body>
 

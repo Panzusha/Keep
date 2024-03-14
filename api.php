@@ -1,7 +1,7 @@
 <?php
 
-/*
 include "api/database.php";
+/*
 
 **
 ** A P I
@@ -20,7 +20,10 @@ if (!empty($_GET) && isset($_GET['faire'])) {  // voir faire=ajout dans le form 
                 //si l'un des deux postes est vide, renvoie index avec message dans l URL et les $_POST titre + note
                 header("Location: index.php?message=Veuillez remplir tous les champs&monSuperTitre=".$monSuperTitre."&contenuNote=".$contenuNote);
             } else {
-                echo "Youpi joie";
+                //enregistrement dans la base de donnée.
+                $database = new Database();
+                $resultatInsertionNote = $database->ajoutNote($monSuperTitre, $contenuNote);
+                echo $resultatInsertionNote;
             }
             break;
         default:

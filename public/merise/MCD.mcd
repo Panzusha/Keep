@@ -1,0 +1,3 @@
+Catégories: num_cat, label, allow_Delete, created_at, updated_at
+Pivot, 0N Catégories, 1N> Notes
+Notes: num_note, title, description, created_at, updated_at

@@ -1,0 +1,21 @@
+{
+  "width": 296,
+  "height": 136,
+  "cx": [
+    [ "CATEGORIES", 53 ],
+    [ "PIVOT", 152 ],
+    [ "NOTES", 247 ]
+  ],
+  "cy": [
+    [ "CATEGORIES", 68 ],
+    [ "PIVOT", 68 ],
+    [ "NOTES", 68 ]
+  ],
+  "shift": [
+    [ "PIVOT,CATEGORIES,0", 0 ],
+    [ "PIVOT,NOTES,0", 0 ]
+  ],
+  "ratio": [
+    [ "PIVOT,NOTES,0", 1.0 ]
+  ]
+}
