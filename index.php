@@ -2,12 +2,12 @@
 
 include "api/database.php";
 // Connection à la Base De Données
-$pdo = getPDO('mysql:host=localhost;dbname=keep_dev', 'root', '');
+$database = new Database();
+$pdo = $database->getPDO();
+
 // Appel de la fonction qui permettra de remplir les champs de films
-$notes = getNotes($pdo);
-
+$notes = $database->getNotes();
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -16,9 +16,9 @@ $notes = getNotes($pdo);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="public/libs/material-design-lite/material.min.css">
-    <link rel="stylesheet" href="public/css/default.css?x=<?= time()?>">
+    <link rel="stylesheet" href="public/css/default.css?x=<?= time() ?>">
     <script defer src="public/libs/material-design-lite/material.min.js"></script>
-    <script defer src="public/js/keep.js?x=<?= time()?>"></script>
+    <script defer src="public/js/keep.js?x=<?= time() ?>"></script>
     <title>Keep</title>
 </head>
 
@@ -106,18 +106,23 @@ $notes = getNotes($pdo);
                 <hr />
                 <div class="mdl-grid notes_list">
                     <?php // création des cartes
-                    foreach ($notes as $note):
+                    foreach ($notes as $note) :
                     ?>
                         <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet mdl-cell--12-col-phone mdl-cell--1-offset-tablet">
                             <div class="mdl-card">
                                 <div class="mdl-card__title">
-                                    <?=$notes['title']?>
+                                    <?= $note['title'] ?>
                                 </div>
                                 <div class="mdl-card__supporting-text">
-                                <?=$notes['content']?>
+                                    <?= $note['description'] ?>
                                 </div>
                                 <div class="mdl-card__actions">
-                                    <i class="material-icons">settings</i>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-color--blue">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button onclick="Keep.removeNote(<?= $note['id'] ?>);" class="mdl-button mdl-js-button mdl-button--icon mdl-color--red">
+                                        <i class="material-icons">delete</i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +133,17 @@ $notes = getNotes($pdo);
             </div>
         </main>
     </div>
-    
+
+    <dialog class="mdl-dialog">
+        <h3 class="mdl-dialog__title">Confirmez-vous la suppression ?</h3>
+        <div class="mdl-dialog__content">
+            <p>Voulez-vous vraiment supprimer cette note ?</p>
+        </div>
+        <div class="mdl-dialog__actions">
+            <a href="#" type="button" class="mdl-button confirm"></a>
+            <button type="button" class="mdl-button close">Annuler</button>
+        </div>
+    </dialog>
 
 </body>
 

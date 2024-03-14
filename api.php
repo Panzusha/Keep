@@ -26,8 +26,17 @@ if (!empty($_GET) && isset($_GET['faire'])) {  // voir faire=ajout dans le form 
                 echo $resultatInsertionNote;
             }
             break;
+        case ("delete"):
+            $noteid = $_GET['note_id'];
+            if($noteid){
+                
+                $database = new Database();
+                $resultatDeleteNote = $database->suppressionNote($noteid);
+                header("Location: index.php");
+            }
+            break;
         default:
-            echo "Faire n'est pas définie :" . $faire;
+            echo "Dans mon switch, je n'ai pas défini le case :" . $faire;
             break;
     }
 } else {
