@@ -5,8 +5,14 @@ include "api/database.php";
 $database = new Database();
 $pdo = $database->getPDO();
 
-// Appel de la fonction qui permettra de remplir les champs de films
+// Appel de la fonction qui permettra de remplir les cards notes
 $notes = $database->getNotes();
+
+// Appel de la fonction qui permettra de remplir les choix de catégories
+$categories = $database->getCategories();
+
+// var_dump($categoriesByNote);
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,8 +22,11 @@ $notes = $database->getNotes();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="public/libs/material-design-lite/material.min.css">
+    <link rel="stylesheet" href="public/libs/select2/dist/css/select2.min.css">
     <link rel="stylesheet" href="public/css/default.css?x=<?= time() ?>">
     <script defer src="public/libs/material-design-lite/material.min.js"></script>
+    <script defer src="public/libs/jquery/dist/jquery.min.js"></script>
+    <script defer src="public/libs/select2/dist/js/select2.min.js"></script>
     <script defer src="public/js/keep.js?x=<?= time() ?>"></script>
     <title>Keep</title>
 </head>
@@ -64,11 +73,11 @@ $notes = $database->getNotes();
                                     <h2 class="mdl-card__title-text">Créer une note</h2>
                                 </div>
                                 <?php // propriétés utilisées dans le formulaire plus bas
-                                // ternaire : si rempli = valeur de l'url sinon vide
+                                // ternaire : si rempli = valeur de l'url sinon vide ou valeurs par défaut
                                 $recuperationTitreNote = isset($_GET['monSuperTitre']) ? $_GET['monSuperTitre'] : 'Toto';
                                 $recuperationContenuNote = isset($_GET['contenuNote']) ? $_GET['contenuNote'] : 'Titi';
 
-                                if (isset($_GET['message'])) {
+                                if (isset($_GET['message'])) { // active le message défini dans ligne 23 api.php
                                 ?>
                                     <div class="mdl-color--red" align="center"><?= $_GET['message'] ?></div>
                                 <?php
@@ -77,7 +86,7 @@ $notes = $database->getNotes();
                                 <div class="mdl-card__supporting-text">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <!-- pattern regex, name utilisé par api.php et ternaire ci dessus -->
-                                        <input required class="mdl-textfield__input" pattern="[A-Za-z]*" name="monSuperTitre" type="text" id="identifiantTitreNote" value="<?= $recuperationTitreNote ?>">
+                                        <input required class="mdl-textfield__input" name="monSuperTitre" type="text" id="identifiantTitreNote" value="<?= $recuperationTitreNote ?>">
                                         <!-- for lié a l'id -->
                                         <label class="mdl-textfield__label" for="identifiantTitreNote">Titre</label>
                                         <span class="mdl-textfield__error">Ce champ est obligatoire</span>
@@ -85,6 +94,18 @@ $notes = $database->getNotes();
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <textarea class="mdl-textfield__input" name="contenuNote" type="text" rows="5" id="note"><?= $recuperationContenuNote ?></textarea>
                                         <label class="mdl-textfield__label" for="note">Créer une note</label>
+                                    </div>
+                                    <div class="">
+                                        <!-- utilisation select2 (amélioration Jquery du select) -->
+                                        <select class="select2 full" multiple name="categories[]">
+                                            <?php
+                                            foreach($categories as $categorie) : // itération dans la table catégories
+                                            ?>
+                                            <option value="<?= $categorie['id'] ?>"><?= $categorie['label'] ?></option>
+                                            <?php
+                                            endforeach;
+                                            ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mdl-card__actions">
@@ -106,7 +127,7 @@ $notes = $database->getNotes();
                 <hr />
                 <div class="mdl-grid notes_list">
                     <?php // création des cartes
-                    foreach ($notes as $note) :
+                    foreach ($notes as $note) : // itération dans la table note
                     ?>
                         <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet mdl-cell--12-col-phone mdl-cell--1-offset-tablet">
                             <div class="mdl-card">
@@ -123,6 +144,11 @@ $notes = $database->getNotes();
                                     <button onclick="Keep.removeNote(<?= $note['id'] ?>);" class="mdl-button mdl-js-button mdl-button--icon mdl-color--red">
                                         <i class="material-icons">delete</i>
                                     </button>
+                                    <?php
+                                        $categoriesByNotes = $database->getCategoriesByNotes($note['id']);
+                                        foreach ($categoriesByNotes as $item) { ?>
+                                    <p><?= $item['label'] ?></p>
+                                        <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +159,7 @@ $notes = $database->getNotes();
             </div>
         </main>
     </div>
-
+    <!-- Fenêtre de dialogue améliorée par mdl, voir keep.js -->
     <dialog class="mdl-dialog">
         <h3 class="mdl-dialog__title">Confirmez-vous la suppression ?</h3>
         <div class="mdl-dialog__content">

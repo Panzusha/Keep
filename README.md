@@ -1,3 +1,5 @@
+# Install
+    npm install -g bower
 # Keep
 
     [CATEGORIES DE NOTE]
