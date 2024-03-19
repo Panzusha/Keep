@@ -83,6 +83,17 @@ class Database
             'valeurId' => $noteid,
         ]);
     }
+
+    // modification d'une note
+    public function modifNote(int $note_id, string $note_title, string $note_descri)
+    {
+        $query = $this->getPDO()->prepare('UPDATE notes SET title = :title , description = :description WHERE id = :valeurId');
+        return $query->execute([
+            'valeurId' => $note_id,
+            'title' => $note_title,
+            'description' => $note_descri
+        ]);
+    }
 }
 
 
